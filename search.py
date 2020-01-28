@@ -91,11 +91,6 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    # got inspiration by:
-    # https://github.com/jeknov/aiAlgorithmsWithPacman/blob/master/01.Search_BFS.DFS.UCS.Astar/search.py
-    # I know that this can be cheesy, but I really didn't understand the structure of Stack and Queue,
-    # since I found this code that helped me explain how to treat it
-
     from util import Stack
 
     gameMap = util.Stack()
