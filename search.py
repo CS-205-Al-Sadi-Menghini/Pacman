@@ -137,6 +137,28 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    
+    from util import PriorityQueue
+
+    gameMap = util.PriorityQueue()
+    visited = []
+    gameMap.push((problem.getStartState(), [], []),0)
+
+    while not gameMap.isEmpty():
+        nodePosition, actions, pathCost = gameMap.pop()
+        
+        if nodePosition not in visited:
+            visited.append(nodePosition)
+
+        if problem.isGoalState(nodePosition):
+            return actions
+
+        for neighbour, move, neighbourCost in problem.getSuccessors(nodePosition):
+            if neighbour not in visited:
+                gameMap.push((neighbour, actions+[move], pathCost + [neighbourCost]),pathCost+[neighbourCost])
+
+
+    return []
     util.raiseNotDefined()
 
 
