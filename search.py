@@ -140,25 +140,23 @@ def uniformCostSearch(problem):
 
     from util import PriorityQueue
 
-    toExpandNodeList = util.PriorityQueue()
-    toExpandPathList = util.PriorityQueue()
+    nodeList = util.PriorityQueue()
+    nodeList.push((problem.getStartState(),[],[]),0)
+    
+    actualNode, actualPath,visited = nodeList.pop()
 
-    visited = []
-    actualPath = []
-
-    actualNode = problem.getStartState()
-
-    while not problem.isGoalState(actualNode):
+    while not problem.isGoalState(actualNode):   
         if actualNode not in visited:
             visited.append(actualNode)
             for child, action, cost in problem.getSuccessors(actualNode):
                 if child not in visited:
                     pathCost = problem.getCostOfActions(actualPath + [action])
-                    toExpandNodeList.push(child, pathCost)
-                    toExpandPathList.push(actualPath + [action], pathCost)
+                    nodeList.push((child,actualPath + [action],visited), pathCost)
+                    #pathCost = problem.getCostOfActions(actualPath + [action])
+                    #toExpandNodeList.push(child, pathCost)
+                    #toExpandPathList.push(actualPath + [action], pathCost)
         #set next node to expand
-        actualNode = toExpandNodeList.pop()
-        actualPath = toExpandPathList.pop()
+        actualNode, actualPath,visited = nodeList.pop()
 
     return actualPath
 
@@ -173,7 +171,23 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    nodeList = util.PriorityQueue()
+    nodeList.push((problem.getStartState(),[],[]),0)
+
+    while 1:
+        if nodeList.isEmpty():
+            return [] 
+        actualNode, actualPath,visited = nodeList.pop()
+        if problem.isGoalState(actualNode):
+            return actualPath 
+        if actualNode not in visited:
+            visited.append(actualNode)
+            for child, action, cost in problem.getSuccessors(actualNode):
+                pathCost = problem.getCostOfActions(actualPath + [action])
+                totalCost=heuristic(child,problem)+pathCost
+                nodeList.push((child,actualPath + [action],visited), totalCost)
+
+    return actualPath
 
 
 # Abbreviations
