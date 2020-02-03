@@ -137,30 +137,30 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    
+
     from util import PriorityQueue
 
-    gameMap = util.PriorityQueue()
+    toExpandNodeList = util.PriorityQueue()
+    toExpandPathList = util.PriorityQueue()
+
     visited = []
-    gameMap.push((problem.getStartState(), [], []),0)
+    actualPath = []
 
-    while not gameMap.isEmpty():
-        nodePosition, actions, pathCost = gameMap.pop()
-        
-        if nodePosition not in visited:
-            visited.append(nodePosition)
+    actualNode = problem.getStartState()
 
-        if problem.isGoalState(nodePosition):
-            return actions
+    while not problem.isGoalState(actualNode):
+        if actualNode not in visited:
+            visited.append(actualNode)
+            for child, action, cost in problem.getSuccessors(actualNode):
+                if child not in visited:
+                    pathCost = problem.getCostOfActions(actualPath + [action])
+                    toExpandNodeList.push(child, pathCost)
+                    toExpandPathList.push(actualPath + [action], pathCost)
+        #set next node to expand
+        actualNode = toExpandNodeList.pop()
+        actualPath = toExpandPathList.pop()
 
-        for neighbour, move, neighbourCost in problem.getSuccessors(nodePosition):
-            if neighbour not in visited:
-                gameMap.push((neighbour, actions+[move], pathCost + [neighbourCost]),pathCost+[neighbourCost])
-
-
-    return []
-    util.raiseNotDefined()
-
+    return actualPath
 
 def nullHeuristic(state, problem=None):
     """
