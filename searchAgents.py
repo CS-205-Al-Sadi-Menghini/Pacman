@@ -378,7 +378,27 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0  # Default to trivial solution
+    
+    currentState = state[0]
+    alreadyVisited = state[1]
+    heuristicSum = 0
+
+    cornerToVisit = []
+    for i in range(4):
+        if corners[i] not in alreadyVisited:
+            cornerToVisit.append(corners[i])
+
+    #We used manhattanDistance combined with python broadcasting to find for each corner 
+    #the closest one to the current position, calculate the how much takes to reach it, add it to heuristic sum 
+    #and update the current position to the reached corner
+    actualPosition = currentState
+    while(len(cornerToVisit) != 0):
+        distance, corner = min([(util.manhattanDistance(actualPosition, corner), corner) for corner in cornerToVisit] )
+        heuristicSum = heuristicSum + distance
+        actualPosition = corner
+        cornerToVisit.remove(corner) 
+
+    return heuristicSum
 
 
 class AStarCornersAgent(SearchAgent):
