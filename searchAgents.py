@@ -498,8 +498,6 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    food = foodGrid.asList()
-
     #the goal of this problem is to eat all the food placed on a game board
     #heuristic estimates the TOTAL distance to the goal from a given point.
 
@@ -509,17 +507,16 @@ def foodHeuristic(state, problem):
 
     #CONSISTENT HEURISTIC
     #must hold that if an action has cost c, then taking that action can only cause a drop in heuristic of at most c.
-
+    food = foodGrid.asList()
+    heuristicValue = 0
     if(len(food) == 0):
         return 0
 
-    heuristic = 0
     #mazeDistamce function uses BFS to search the closest food to a given position
     for foodPosition in food:
         distance = mazeDistance(position, foodPosition, problem.startingGameState)
-        if distance > heuristic:
-            heuristic = distance
-    return heuristic
+        heuristicValue = max(distance, heuristicValue)
+    return heuristicValue
 
 
 class ClosestDotSearchAgent(SearchAgent):
