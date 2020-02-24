@@ -498,7 +498,28 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    food = foodGrid.asList()
+
+    #the goal of this problem is to eat all the food placed on a game board
+    #heuristic estimates the TOTAL distance to the goal from a given point.
+
+    #ADMISSIBLE HEURISTIC
+    #must be lower bounds on the actual shortest path cost to the nearest goal
+    #use the farthest food position on the board to do this estimation could be a good idea
+
+    #CONSISTENT HEURISTIC
+    #must hold that if an action has cost c, then taking that action can only cause a drop in heuristic of at most c.
+
+    if(len(food) == 0):
+        return 0
+
+    heuristic = 0
+    #mazeDistamce function uses BFS to search the closest food to a given position
+    for foodPosition in food:
+        distance = mazeDistance(position, foodPosition, problem.startingGameState)
+        if distance > heuristic:
+            heuristic = distance
+    return heuristic
 
 
 class ClosestDotSearchAgent(SearchAgent):
@@ -530,7 +551,28 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #implementing BFS to find the closest dot to the current positions.
+        searchTree = util.Queue()
+        visited = []
+
+        searchTree.push((problem.getStartState(), []))
+
+        if(len(food.asList()) == 0):
+            return []
+
+        #keeps running while the algorithm find the first food position and returns all the actions tracked since then.
+        #had to implement isGoalState just checking current position value on inside the food grid(True/False)
+        while True: 
+            node, actions = searchTree.pop() 
+            if not node in visited:
+                visited.append(node)
+                if problem.isGoalState(node):
+                    return actions
+                successors = problem.getSuccessors(node)
+                for successor in successors:
+                    coordinate, direction, cost = successor
+                    searchTree.push((coordinate, actions + [direction]))
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -567,7 +609,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x,y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.food[x][y]
+        
 
 
 def mazeDistance(point1, point2, gameState):
